@@ -1,0 +1,34 @@
+[
+  {
+    "Id": 1,
+    "name": "ContentCraft Pro",
+    "color": "#3B82F6",
+    "emoji": "🚀",
+    "isDefault": true,
+    "createdAt": "2024-01-01T00:00:00Z"
+  },
+  {
+    "Id": 2,
+    "name": "Marketing Hub",
+    "color": "#10B981",
+    "emoji": "📈",
+    "isDefault": false,
+    "createdAt": "2024-01-15T00:00:00Z"
+  },
+  {
+    "Id": 3,
+    "name": "Creative Studio",
+    "color": "#8B5CF6",
+    "emoji": "🎨",
+    "isDefault": false,
+    "createdAt": "2024-02-01T00:00:00Z"
+  },
+  {
+    "Id": 4,
+    "name": "Tech Blog",
+    "color": "#F59E0B",
+    "emoji": "💻",
+    "isDefault": false,
+    "createdAt": "2024-02-10T00:00:00Z"
+  }
+]

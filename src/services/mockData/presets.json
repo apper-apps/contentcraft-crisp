@@ -1,0 +1,146 @@
+[
+  {
+    "Id": 1,
+    "name": "Comprehensive Content Suite",
+    "description": "Complete content transformation with all formats including blog posts, social media, SEO optimization, and video descriptions.",
+    "prompt": "Transform the following content into a comprehensive suite of marketing materials including blog posts, social media content, SEO tags, and video descriptions. Focus on maintaining brand voice while optimizing for different platforms and audiences.",
+    "category": "comprehensive",
+    "isCustom": false,
+    "suggested": true
+  },
+  {
+    "Id": 2,
+    "name": "YouTube Optimization",
+    "description": "Specialized for YouTube content with descriptions, timestamps, tags, and engagement-focused copy.",
+    "prompt": "Create YouTube-optimized content including compelling descriptions, video timestamps, relevant tags, and engagement hooks. Focus on discoverability and viewer retention.",
+    "category": "youtube",
+    "isCustom": false,
+    "suggested": true
+  },
+  {
+    "Id": 3,
+    "name": "Blog & SEO Focus",
+    "description": "SEO-optimized blog posts with meta descriptions, headers, and keyword integration.",
+    "prompt": "Transform this content into SEO-optimized blog posts with proper header structure, meta descriptions, keyword integration, and search-friendly formatting.",
+    "category": "blog",
+    "isCustom": false,
+    "suggested": false
+  },
+  {
+    "Id": 4,
+    "name": "Social Media Pack",
+    "description": "Multi-platform social media content for Twitter, LinkedIn, Facebook, and Instagram.",
+    "prompt": "Create engaging social media content optimized for Twitter, LinkedIn, Facebook, and Instagram. Include hashtags, engagement hooks, and platform-specific formatting.",
+    "category": "social",
+    "isCustom": false,
+    "suggested": true
+  },
+  {
+    "Id": 5,
+    "name": "Technical Documentation",
+    "description": "Developer and technical audience focused content with code examples and technical depth.",
+    "prompt": "Transform this into technical documentation suitable for developers and technical audiences. Include code examples, technical specifications, and detailed explanations.",
+    "category": "technical",
+    "isCustom": false,
+    "suggested": false
+  },
+  {
+    "Id": 6,
+    "name": "Marketing Campaign",
+    "description": "Sales-focused content with compelling CTAs and conversion-optimized copy.",
+    "prompt": "Create marketing campaign content with compelling calls-to-action, conversion-focused copy, and persuasive messaging that drives action.",
+    "category": "marketing",
+    "isCustom": false,
+    "suggested": false
+  },
+  {
+    "Id": 7,
+    "name": "Podcast Content",
+    "description": "Podcast-specific content including show notes, episode descriptions, and audio-first formatting.",
+    "prompt": "Transform this into podcast-ready content including detailed show notes, episode descriptions, guest introductions, and audio-first formatting.",
+    "category": "podcast",
+    "isCustom": false,
+    "suggested": false
+  },
+  {
+    "Id": 8,
+    "name": "E-commerce Product",
+    "description": "Product descriptions, sales copy, and e-commerce focused content.",
+    "prompt": "Create e-commerce optimized content including compelling product descriptions, sales copy, feature highlights, and conversion-focused messaging.",
+    "category": "ecommerce",
+    "isCustom": false,
+    "suggested": false
+  },
+  {
+    "Id": 9,
+    "name": "Email Newsletter",
+    "description": "Newsletter content with subject lines, segments, and email-optimized formatting.",
+    "prompt": "Transform this into email newsletter content with compelling subject lines, segmented sections, and email-optimized formatting that drives engagement.",
+    "category": "newsletter",
+    "isCustom": false,
+    "suggested": false
+  },
+  {
+    "Id": 10,
+    "name": "Webinar Presentation",
+    "description": "Webinar content with slides, talking points, and engagement elements.",
+    "prompt": "Create webinar presentation content including slide outlines, talking points, audience engagement elements, and interactive components.",
+    "category": "webinar",
+    "isCustom": false,
+    "suggested": false
+  },
+  {
+    "Id": 11,
+    "name": "Corporate Communication",
+    "description": "Professional corporate content for internal and external business communications.",
+    "prompt": "Transform this into professional corporate communication suitable for business contexts, internal memos, and executive presentations.",
+    "category": "corporate",
+    "isCustom": false,
+    "suggested": false
+  },
+  {
+    "Id": 12,
+    "name": "Startup Pitch",
+    "description": "Investor and startup-focused content with compelling narratives and growth metrics.",
+    "prompt": "Create startup-focused content including investor pitches, growth narratives, market opportunity descriptions, and compelling business stories.",
+    "category": "startup",
+    "isCustom": false,
+    "suggested": false
+  },
+  {
+    "Id": 13,
+    "name": "Healthcare Content",
+    "description": "Medical and healthcare content with compliance considerations and patient education focus.",
+    "prompt": "Transform this into healthcare-appropriate content with medical accuracy, compliance considerations, and patient education focus.",
+    "category": "healthcare",
+    "isCustom": false,
+    "suggested": false
+  },
+  {
+    "Id": 14,
+    "name": "Financial Services",
+    "description": "Finance and investment content with regulatory compliance and professional tone.",
+    "prompt": "Create financial services content with regulatory compliance, professional tone, and investment-focused messaging appropriate for financial audiences.",
+    "category": "finance",
+    "isCustom": false,
+    "suggested": false
+  },
+  {
+    "Id": 15,
+    "name": "Non-profit Impact",
+    "description": "Mission-driven content for non-profits with impact stories and donation focus.",
+    "prompt": "Transform this into non-profit content highlighting mission impact, success stories, and donation-focused messaging that inspires action.",
+    "category": "nonprofit",
+    "isCustom": false,
+    "suggested": false
+  },
+  {
+    "Id": 16,
+    "name": "Local Business",
+    "description": "Community-focused content for local businesses with location-based optimization.",
+    "prompt": "Create local business content with community focus, location-based optimization, and local customer engagement strategies.",
+    "category": "local",
+    "isCustom": false,
+    "suggested": false
+  }
+]
