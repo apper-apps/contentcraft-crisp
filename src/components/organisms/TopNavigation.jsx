@@ -117,11 +117,11 @@ const navigate = useNavigate();
                 className="flex items-center space-x-2 px-3 py-2"
                 onClick={() => setIsUserMenuOpen(!isUserMenuOpen)}
               >
-                <div className="w-8 h-8 bg-gradient-to-br from-primary-500 to-indigo-600 rounded-full flex items-center justify-center">
-                  {currentUser.avatar ? (
+<div className="w-8 h-8 bg-gradient-to-br from-primary-500 to-indigo-600 rounded-full flex items-center justify-center">
+                  {currentUser?.avatar ? (
                     <img 
                       src={currentUser.avatar} 
-                      alt={currentUser.name}
+                      alt={currentUser.name || 'User'}
                       className="w-8 h-8 rounded-full object-cover"
                     />
                   ) : (
@@ -129,7 +129,7 @@ const navigate = useNavigate();
                   )}
                 </div>
                 <span className="hidden sm:block text-sm font-medium text-gray-700">
-                  {currentUser.name}
+                  {currentUser?.name || 'User'}
                 </span>
                 <ApperIcon 
                   name={isUserMenuOpen ? "ChevronUp" : "ChevronDown"} 
@@ -139,8 +139,8 @@ const navigate = useNavigate();
 
               {isUserMenuOpen && (
                 <div className="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-xl border border-gray-200 py-2 animate-slide-in-top">
-                  <div className="px-4 py-2 border-b border-gray-100">
-                    <p className="text-sm font-medium text-gray-900">{currentUser.name}</p>
+<div className="px-4 py-2 border-b border-gray-100">
+                    <p className="text-sm font-medium text-gray-900">{currentUser?.name || 'User'}</p>
                     <p className="text-xs text-gray-500">Content Creator</p>
                   </div>
                   

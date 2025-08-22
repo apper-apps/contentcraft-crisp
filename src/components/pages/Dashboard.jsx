@@ -25,10 +25,10 @@ const Dashboard = ({ selectedBrand }) => {
 const loadDashboardData = async () => {
     try {
       setLoading(true);
-      setError(null);
-      const data = await contentService.getAll(currentTenant?.Id);
-      // Filter by brand if needed
-      const filteredData = selectedBrand 
+const data = await contentService.getAll(currentTenant?.Id);
+      setContents(data);
+      
+      const filteredData = selectedBrand && selectedBrand.Id
         ? data.filter(item => item.brandId === selectedBrand.Id)
         : data;
       setContents(filteredData);

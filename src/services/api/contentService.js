@@ -31,8 +31,8 @@ class ContentService {
 
 async create(contentData) {
     await delay(400);
-    const newContent = {
-      Id: Math.max(...this.contents.map(c => c.Id)) + 1,
+const newContent = {
+      Id: this.contents.length > 0 ? Math.max(...this.contents.map(c => c.Id)) + 1 : 1,
       input: contentData.input,
       preset: contentData.preset,
       provider: contentData.provider || "OpenAI GPT-4",
@@ -86,8 +86,8 @@ async create(contentData) {
       social_posts: this.generateSocialPosts(contentData),
       email_newsletter: this.generateEmailNewsletter(contentData)
     };
-
-    return sampleOutputs[type] || `Generated ${type} content based on: ${contentData.input.slice(0, 100)}...`;
+const sampleOutputs = { /* sample outputs object */ };
+    return sampleOutputs[type] || `Generated ${type} content based on: ${contentData?.input?.slice(0, 100) || 'provided content'}...`;
   }
 
   generateYouTubeDescription(data) {
@@ -112,8 +112,8 @@ Discover powerful techniques to elevate your content game with this comprehensiv
 • Better audience targeting
 • Improved content ROI
 • Stronger brand presence
-
-💡 Key Takeaway: ${data.input.slice(0, 150)}...
+💡 Key Takeaway: Understanding your audience is the foundation of successful content marketing.
+💡 Key Takeaway: ${data?.input?.slice(0, 150) || 'your content strategy'}...
 
 🔔 Subscribe for more content marketing insights!
 
@@ -124,8 +124,8 @@ Discover powerful techniques to elevate your content game with this comprehensiv
     return `# ${data.preset}: A Comprehensive Guide
 
 ## Introduction
-
-${data.input}
+This comprehensive forum post explores the key insights from your content:
+${data?.input || 'your provided content'}
 
 This comprehensive approach to content strategy has proven effective across various industries and can be adapted to meet your specific business needs.
 
@@ -169,8 +169,8 @@ Remember: consistency and quality are more important than perfection. Start wher
     return `**${data.preset} - Sharing My Experience**
 
 Hey everyone! 👋
-
-I wanted to share some insights about ${data.input.slice(0, 100)}...
+Dear subscribers,
+I wanted to share some insights about ${data?.input?.slice(0, 100) || 'the latest content marketing trends'}...
 
 **What I've Learned:**
 - Implementation requires patience and consistency

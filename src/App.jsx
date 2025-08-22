@@ -41,9 +41,11 @@ const initializeApp = async () => {
       const brandsData = await brandService.getAll(currentTenant?.Id);
       setBrands(brandsData);
       
-      // Set default brand for this tenant
-      const defaultBrand = brandsData.find(b => b.isDefault) || brandsData[0];
-      setSelectedBrand(defaultBrand);
+// Set default brand with null safety
+      const defaultBrand = brandsData?.find(b => b.isDefault) || brandsData?.[0];
+      if (defaultBrand) {
+        setSelectedBrand(defaultBrand);
+      }
       
       toast.success(`Welcome to ${currentTenant?.name || 'ContentCraft Pro'}!`);
     } catch (err) {
@@ -69,9 +71,11 @@ const initializeApp = async () => {
         if (updatedSelectedBrand) {
           setSelectedBrand(updatedSelectedBrand);
         } else {
-          // If selected brand was deleted, switch to default
-          const defaultBrand = updatedBrands.find(b => b.isDefault) || updatedBrands[0];
-          setSelectedBrand(defaultBrand);
+// Update selected brand if it was affected
+          const defaultBrand = updatedBrands?.find(b => b.isDefault) || updatedBrands?.[0];
+          if (defaultBrand) {
+            setSelectedBrand(defaultBrand);
+          }
         }
       }
     } catch (err) {
@@ -138,29 +142,9 @@ return (
       />
       
 <main>
-        <Routes>
+<Routes>
           <Route 
             path="/" 
-            element={<HomePage selectedBrand={selectedBrand} />} 
-          />
-          <Route 
-            path="/dashboard" 
-            element={<Dashboard selectedBrand={selectedBrand} />} 
-          />
-          <Route 
-            path="/library" 
-            element={<ContentLibrary selectedBrand={selectedBrand} />} 
-          />
-          <Route 
-            path="/analytics" 
-            element={<Analytics selectedBrand={selectedBrand} />} 
-          />
-          <Route 
-            path="/profile" 
-            element={<Profile />} 
-          />
-          <Route 
-path="/" 
             element={
               <ProtectedRoute>
                 <HomePage selectedBrand={selectedBrand} />

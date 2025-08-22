@@ -22,10 +22,10 @@ const Analytics = ({ selectedBrand }) => {
 
 const loadAnalytics = async () => {
     try {
-      setLoading(true);
+setLoading(true);
       setError(null);
       const data = await contentService.getAll(currentTenant?.Id);
-      const filteredData = selectedBrand 
+      const filteredData = selectedBrand && selectedBrand.Id
         ? data.filter(item => item.brandId === selectedBrand.Id)
         : data;
       setContents(filteredData);

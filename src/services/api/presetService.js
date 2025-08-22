@@ -30,8 +30,8 @@ class PresetService {
 
   async create(presetData) {
     await delay(300);
-    const newPreset = {
-      Id: Math.max(...this.presets.map(p => p.Id)) + 1,
+const newPreset = {
+      Id: this.presets.length > 0 ? Math.max(...this.presets.map(p => p.Id)) + 1 : 1,
       name: presetData.name,
       description: presetData.description,
       prompt: presetData.prompt,
