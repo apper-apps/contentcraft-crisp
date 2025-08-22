@@ -27,11 +27,11 @@ class ContentService {
       throw new Error(`Content with ID ${id} not found`);
     }
     return { ...content };
-  }
+}
 
-async create(contentData) {
+  async create(contentData) {
     await delay(400);
-const newContent = {
+    const newContent = {
       Id: this.contents.length > 0 ? Math.max(...this.contents.map(c => c.Id)) + 1 : 1,
       input: contentData.input,
       preset: contentData.preset,
@@ -84,12 +84,11 @@ const newContent = {
       timestamps: this.generateTimestamps(contentData),
       voice_analysis: this.generateVoiceAnalysis(contentData),
       social_posts: this.generateSocialPosts(contentData),
-      email_newsletter: this.generateEmailNewsletter(contentData)
+email_newsletter: this.generateEmailNewsletter(contentData)
     };
-const sampleOutputs = { /* sample outputs object */ };
+    
     return sampleOutputs[type] || `Generated ${type} content based on: ${contentData?.input?.slice(0, 100) || 'provided content'}...`;
   }
-
   generateYouTubeDescription(data) {
     return `🚀 ${data.preset} - Transform Your Content Strategy!
 
@@ -112,7 +111,7 @@ Discover powerful techniques to elevate your content game with this comprehensiv
 • Better audience targeting
 • Improved content ROI
 • Stronger brand presence
-💡 Key Takeaway: Understanding your audience is the foundation of successful content marketing.
+
 💡 Key Takeaway: ${data?.input?.slice(0, 150) || 'your content strategy'}...
 
 🔔 Subscribe for more content marketing insights!
@@ -167,11 +166,9 @@ Remember: consistency and quality are more important than perfection. Start wher
 
   generateForumPost(data) {
     return `**${data.preset} - Sharing My Experience**
-
 Hey everyone! 👋
-Dear subscribers,
-I wanted to share some insights about ${data?.input?.slice(0, 100) || 'the latest content marketing trends'}...
 
+I wanted to share some insights about ${data?.input?.slice(0, 100) || 'the latest content marketing trends'}...
 **What I've Learned:**
 - Implementation requires patience and consistency
 - Results may take time but are worth the effort
