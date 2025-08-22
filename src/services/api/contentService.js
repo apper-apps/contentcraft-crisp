@@ -492,5 +492,3 @@ If this was helpful, forward it to a friend who might benefit!
 }
 
 export const contentService = new ContentService();
-
-export const contentService = new ContentService();

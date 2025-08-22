@@ -45,8 +45,6 @@ const ContentLibrary = ({ selectedBrand }) => {
     loadContents();
   }, [selectedBrand]);
 
-const loadContents = async () => {
-
   const handleDeleteContent = async (contentId) => {
     try {
       await contentService.delete(contentId);
