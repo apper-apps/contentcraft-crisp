@@ -3,10 +3,8 @@ import { useSelector } from "react-redux";
 import ApperIcon from "@/components/ApperIcon";
 import Button from "@/components/atoms/Button";
 import { cn } from "@/utils/cn";
-import { useTenant } from "@/hooks/useTenant";
 
 const TenantSelector = ({ onManageTenants }) => {
-  const { currentTenant, tenants, switchTenant } = useTenant();
   const [isOpen, setIsOpen] = useState(false);
   const dropdownRef = useRef(null);
 
