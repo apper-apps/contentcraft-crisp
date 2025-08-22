@@ -1,11 +1,10 @@
-import React, { useState, useRef, useEffect } from "react";
-import { NavLink, useNavigate } from "react-router-dom";
-import ApperIcon from "@/components/ApperIcon";
-import BrandSelector from "@/components/molecules/BrandSelector";
-import TenantSelector from "@/components/molecules/TenantSelector";
-import Button from "@/components/atoms/Button";
-import { useAuth } from "@/contexts/AuthContext";
-import { cn } from "@/utils/cn";
+import React, { useState, useRef, useEffect } from 'react';
+import { NavLink, useNavigate } from 'react-router-dom';
+import ApperIcon from '@/components/ApperIcon';
+import BrandSelector from '@/components/molecules/BrandSelector';
+import TenantSelector from '@/components/molecules/TenantSelector';
+import Button from '@/components/atoms/Button';
+import { cn } from '@/utils/cn';
 
 const TopNavigation = ({ 
   brands, 

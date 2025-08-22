@@ -8,7 +8,6 @@ import Error from "@/components/ui/Error";
 import Empty from "@/components/ui/Empty";
 import { useNavigate } from "react-router-dom";
 import { contentService } from "@/services/api/contentService";
-import { useTenant } from "@/contexts/TenantContext";
 import { format } from "date-fns";
 
 const Dashboard = ({ selectedBrand }) => {
