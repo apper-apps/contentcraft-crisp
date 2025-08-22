@@ -93,33 +93,38 @@ const initializeApp = async () => {
   }
 
   // If not authenticated, show login page for protected routes
-  if (!isAuthenticated) {
-    return <Login />;
-  }
+// ProtectedRoute component for authenticated routes
+  const ProtectedRoute = ({ children }) => {
+    if (!isAuthenticated) {
+      return <Login />;
+    }
 
-  if (!currentTenant) {
-    return (
-      <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 flex items-center justify-center">
-        <Error 
-          title="No Tenant Available"
-          message="Please contact your administrator to set up tenant access." 
-          onRetry={() => window.location.reload()}
-        />
-      </div>
-    );
-  }
+    if (!currentTenant) {
+      return (
+        <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 flex items-center justify-center">
+          <Error 
+            title="No Tenant Available"
+            message="Please contact your administrator to set up tenant access." 
+            onRetry={() => window.location.reload()}
+          />
+        </div>
+      );
+    }
 
-  if (error) {
-    return (
-      <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 flex items-center justify-center">
-        <Error 
-          title="Application Error"
-          message={error} 
-          onRetry={initializeApp}
-        />
-      </div>
-    );
-  }
+    if (error) {
+      return (
+        <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 flex items-center justify-center">
+          <Error 
+            title="Application Error"
+            message={error} 
+            onRetry={initializeApp}
+          />
+        </div>
+      );
+    }
+
+    return children;
+  };
 
 return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100">
@@ -155,9 +160,46 @@ return (
             element={<Profile />} 
           />
           <Route 
-            path="/login" 
-            element={<Login />} 
-/>
+path="/" 
+            element={
+              <ProtectedRoute>
+                <HomePage selectedBrand={selectedBrand} />
+              </ProtectedRoute>
+            } 
+          />
+          <Route 
+            path="/dashboard" 
+            element={
+              <ProtectedRoute>
+                <Dashboard selectedBrand={selectedBrand} />
+              </ProtectedRoute>
+            } 
+          />
+          <Route 
+            path="/library" 
+            element={
+              <ProtectedRoute>
+                <ContentLibrary selectedBrand={selectedBrand} />
+              </ProtectedRoute>
+            } 
+          />
+          <Route 
+            path="/analytics" 
+            element={
+              <ProtectedRoute>
+                <Analytics selectedBrand={selectedBrand} />
+              </ProtectedRoute>
+            } 
+          />
+          <Route 
+            path="/profile" 
+            element={
+              <ProtectedRoute>
+                <Profile />
+              </ProtectedRoute>
+            } 
+          />
+          <Route path="/login" element={<Login />} />
           <Route path="/signup" element={<SignUp />} />
         </Routes>
       </main>
