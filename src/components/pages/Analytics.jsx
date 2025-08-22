@@ -7,7 +7,6 @@ import Error from "@/components/ui/Error";
 import Empty from "@/components/ui/Empty";
 import Chart from "react-apexcharts";
 import { contentService } from "@/services/api/contentService";
-import { useTenant } from "@/contexts/TenantContext";
 import { format, subDays, startOfWeek, endOfWeek, eachDayOfInterval } from "date-fns";
 const Analytics = ({ selectedBrand }) => {
 // Simplified tenant for this implementation
