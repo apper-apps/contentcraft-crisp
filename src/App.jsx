@@ -10,6 +10,7 @@ import Profile from "@/components/pages/Profile";
 import Login from "@/components/pages/Login";
 import Loading from "@/components/ui/Loading";
 import Error from "@/components/ui/Error";
+import SignUp from "@/components/pages/SignUp";
 import { brandService } from "@/services/api/brandService";
 import { useTenant } from "@/contexts/TenantContext";
 import { useAuth } from "@/contexts/AuthContext";
@@ -156,7 +157,8 @@ return (
           <Route 
             path="/login" 
             element={<Login />} 
-          />
+/>
+          <Route path="/signup" element={<SignUp />} />
         </Routes>
       </main>
 

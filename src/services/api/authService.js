@@ -26,6 +26,9 @@ const mockUsers = [
   }
 ];
 
+// Track next available ID for new users
+let nextUserId = Math.max(...mockUsers.map(u => u.Id)) + 1;
+
 const authService = {
   async login(email, password) {
     // Simulate network delay
@@ -39,6 +42,45 @@ const authService = {
 
     // Return user data without password
     const { password: _, ...userData } = user;
+    return userData;
+  },
+
+  async signup(name, email, password) {
+    // Simulate network delay
+    await new Promise(resolve => setTimeout(resolve, 1200));
+    
+    // Check if user already exists
+    const existingUser = mockUsers.find(u => u.email.toLowerCase() === email.toLowerCase());
+    if (existingUser) {
+      throw new Error('An account with this email already exists');
+    }
+
+    // Validate email format
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(email)) {
+      throw new Error('Please enter a valid email address');
+    }
+
+    // Validate password strength
+    if (password.length < 6) {
+      throw new Error('Password must be at least 6 characters long');
+    }
+
+    // Create new user
+    const newUser = {
+      Id: nextUserId++,
+      email: email.toLowerCase(),
+      password: password,
+      name: name.trim(),
+      role: 'user',
+      avatar: null
+    };
+
+    // Add to mock users array
+    mockUsers.push(newUser);
+
+    // Return user data without password
+    const { password: _, ...userData } = newUser;
     return userData;
   },
 

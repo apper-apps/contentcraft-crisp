@@ -59,12 +59,32 @@ export const AuthProvider = ({ children }) => {
       toast.error('Logout failed');
       throw error;
     }
+};
+
+  const signup = async (name, email, password) => {
+    try {
+      setLoading(true);
+      const userData = await authService.signup(name, email, password);
+      
+      // Store user data
+      localStorage.setItem('contentcraft_user', JSON.stringify(userData));
+      setUser(userData);
+      
+      toast.success(`Welcome to ContentCraft Pro, ${userData.name}!`);
+      return userData;
+    } catch (error) {
+      toast.error(error.message || 'Signup failed. Please try again.');
+      throw error;
+    } finally {
+      setLoading(false);
+    }
   };
 
   const value = {
     user,
     loading,
     login,
+    signup,
     logout,
     isAuthenticated: !!user
   };
