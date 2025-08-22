@@ -10,23 +10,24 @@ import { contentService } from "@/services/api/contentService";
 import { useTenant } from "@/contexts/TenantContext";
 import { format, subDays, startOfWeek, endOfWeek, eachDayOfInterval } from "date-fns";
 const Analytics = ({ selectedBrand }) => {
-  const { currentTenant } = useTenant();
+// Simplified tenant for this implementation
+  const currentTenant = { Id: 1 };
   const [contents, setContents] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [timeRange, setTimeRange] = useState("7d");
 
-  useEffect(() => {
+useEffect(() => {
     loadAnalytics();
   }, [selectedBrand, currentTenant]);
 
-const loadAnalytics = async () => {
+  const loadAnalytics = async () => {
     try {
-setLoading(true);
+      setLoading(true);
       setError(null);
       const data = await contentService.getAll(currentTenant?.Id);
       const filteredData = selectedBrand && selectedBrand.Id
-        ? data.filter(item => item.brandId === selectedBrand.Id)
+        ? data.filter(item => item.brand_id_c === selectedBrand.Id)
         : data;
       setContents(filteredData);
     } catch (err) {
@@ -56,18 +57,18 @@ setLoading(true);
   }
 
   // Calculate metrics
-  const totalContent = contents.length;
-  const totalWords = contents.reduce((acc, c) => acc + (c.wordCount || 1250), 0);
+const totalContent = contents.length;
+  const totalWords = contents.reduce((acc, c) => acc + (c.word_count_c || 1250), 0);
   const avgWordsPerContent = Math.round(totalWords / totalContent);
   
-  const last7Days = contents.filter(c => {
-    const contentDate = new Date(c.createdAt);
+const last7Days = contents.filter(c => {
+    const contentDate = new Date(c.created_at_c);
     const sevenDaysAgo = subDays(new Date(), 7);
     return contentDate >= sevenDaysAgo;
   }).length;
 
   // Prepare chart data
-  const getDailyData = () => {
+const getDailyData = () => {
     const days = eachDayOfInterval({
       start: subDays(new Date(), 6),
       end: new Date()
@@ -75,14 +76,14 @@ setLoading(true);
 
     return days.map(day => {
       const dayContents = contents.filter(c => {
-        const contentDate = new Date(c.createdAt);
+        const contentDate = new Date(c.created_at_c);
         return format(contentDate, "yyyy-MM-dd") === format(day, "yyyy-MM-dd");
       });
       
       return {
         date: format(day, "MMM d"),
         content: dayContents.length,
-        words: dayContents.reduce((acc, c) => acc + (c.wordCount || 1250), 0)
+        words: dayContents.reduce((acc, c) => acc + (c.word_count_c || 1250), 0)
       };
     });
   };
@@ -90,11 +91,11 @@ setLoading(true);
   const dailyData = getDailyData();
 
   // Content type distribution
-  const getContentTypeData = () => {
+const getContentTypeData = () => {
     const types = {};
     contents.forEach(content => {
-      if (content.outputs) {
-        Object.keys(content.outputs).forEach(type => {
+      if (content.outputs_c) {
+        Object.keys(JSON.parse(content.outputs_c || '{}')).forEach(type => {
           types[type] = (types[type] || 0) + 1;
         });
       }
@@ -110,9 +111,9 @@ setLoading(true);
 
   // Preset usage
   const getPresetUsage = () => {
-    const presets = {};
+const presets = {};
     contents.forEach(content => {
-      const preset = content.preset || "Unknown";
+      const preset = content.preset_c || "Unknown";
       presets[preset] = (presets[preset] || 0) + 1;
     });
 
@@ -223,9 +224,9 @@ setLoading(true);
             </p>
           </div>
           <div className="flex items-center space-x-2">
-            <span className="text-2xl">{selectedBrand?.emoji || "📊"}</span>
+<span className="text-2xl">{selectedBrand?.emoji_c || "📊"}</span>
             <div className="text-right">
-              <p className="font-medium text-gray-900">{selectedBrand?.name || "All Brands"}</p>
+              <p className="font-medium text-gray-900">{selectedBrand?.Name || "All Brands"}</p>
               <p className="text-sm text-gray-500">Analytics Scope</p>
             </div>
           </div>

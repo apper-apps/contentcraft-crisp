@@ -63,11 +63,12 @@ const ContentGenerator = ({ selectedBrand }) => {
       setGeneratedContent({});
       
       const contentData = {
-        input: inputText || `File: ${selectedFile?.name}`,
-        preset: selectedPreset.name,
-        types: selectedTypes,
-        brandId: selectedBrand?.Id
-      };
+input_c: inputText || `File: ${selectedFile?.name}`,
+preset_c: selectedPreset.Name,
+types: selectedTypes,
+brand_id_c: selectedBrand?.Id,
+tenant_id_c: selectedBrand?.tenant_id_c
+};
 
       toast.info("Starting content generation...");
       

@@ -13,18 +13,18 @@ const TopNavigation = ({
   onBrandChange, 
   onManageBrands,
   onManageTenants,
-  currentUser
+currentUser
 }) => {
-  const { logout } = useAuth();
   const [isUserMenuOpen, setIsUserMenuOpen] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const userMenuRef = useRef(null);
-const navigate = useNavigate();
+  const navigate = useNavigate();
 
   const handleLogout = async () => {
     if (window.confirm('Are you sure you want to log out?')) {
       try {
-        await logout();
+        const { ApperUI } = window.ApperSDK;
+        await ApperUI.logout();
         navigate('/login', { replace: true });
       } catch (error) {
         console.error('Logout failed:', error);

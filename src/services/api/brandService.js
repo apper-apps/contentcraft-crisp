@@ -1,89 +1,251 @@
-import brandsData from "@/services/mockData/brands.json";
-
 const delay = (ms) => new Promise(resolve => setTimeout(resolve, ms));
 
 class BrandService {
   constructor() {
-    this.brands = [...brandsData];
-  }
-
-  // Filter brands by tenant
-  filterByTenant(brands, tenantId) {
-    if (!tenantId) return brands;
-    return brands.filter(brand => brand.tenantId === tenantId);
+    const { ApperClient } = window.ApperSDK;
+    this.apperClient = new ApperClient({
+      apperProjectId: import.meta.env.VITE_APPER_PROJECT_ID,
+      apperPublicKey: import.meta.env.VITE_APPER_PUBLIC_KEY
+    });
+    this.tableName = 'brand_c';
   }
 
   async getAll(tenantId = null) {
-    await delay(200);
-    const allBrands = [...this.brands];
-    return tenantId ? this.filterByTenant(allBrands, tenantId) : allBrands;
-  }
+    try {
+      const params = {
+        fields: [
+          { field: { Name: "Name" } },
+          { field: { Name: "Tags" } },
+          { field: { Name: "color_c" } },
+          { field: { Name: "emoji_c" } },
+          { field: { Name: "is_default_c" } },
+          { field: { Name: "created_at_c" } },
+          { field: { Name: "tenant_id_c" } }
+        ]
+      };
 
+      if (tenantId) {
+        params.where = [
+          {
+            FieldName: "tenant_id_c",
+            Operator: "EqualTo",
+            Values: [parseInt(tenantId)]
+          }
+        ];
+      }
+
+      const response = await this.apperClient.fetchRecords(this.tableName, params);
+      
+      if (!response.success) {
+        console.error(response.message);
+        throw new Error(response.message);
+      }
+
+      return response.data || [];
+    } catch (error) {
+      if (error?.response?.data?.message) {
+        console.error("Error fetching brands:", error?.response?.data?.message);
+      } else {
+        console.error(error);
+      }
+      throw error;
+    }
+  }
 
   async getById(id) {
-    await delay(150);
-    const brand = this.brands.find(b => b.Id === parseInt(id));
-    if (!brand) {
-      throw new Error(`Brand with ID ${id} not found`);
+    try {
+      const params = {
+        fields: [
+          { field: { Name: "Name" } },
+          { field: { Name: "Tags" } },
+          { field: { Name: "color_c" } },
+          { field: { Name: "emoji_c" } },
+          { field: { Name: "is_default_c" } },
+          { field: { Name: "created_at_c" } },
+          { field: { Name: "tenant_id_c" } }
+        ]
+      };
+
+      const response = await this.apperClient.getRecordById(this.tableName, parseInt(id), params);
+      
+      if (!response || !response.data) {
+        throw new Error(`Brand with ID ${id} not found`);
+      }
+      
+      return response.data;
+    } catch (error) {
+      if (error?.response?.data?.message) {
+        console.error(`Error fetching brand with ID ${id}:`, error?.response?.data?.message);
+      } else {
+        console.error(error);
+      }
+      throw error;
     }
-    return { ...brand };
   }
 
-async create(brandData) {
-    await delay(300);
-    const newBrand = {
-      Id: Math.max(...this.brands.map(b => b.Id)) + 1,
-      name: brandData.name,
-      color: brandData.color,
-      emoji: brandData.emoji,
-      tenantId: brandData.tenantId,
-      isDefault: false,
-      createdAt: new Date().toISOString()
-    };
-    this.brands.push(newBrand);
-    return { ...newBrand };
+  async create(brandData) {
+    try {
+      const params = {
+        records: [
+          {
+            Name: brandData.Name,
+            Tags: brandData.Tags || "",
+            color_c: brandData.color_c,
+            emoji_c: brandData.emoji_c,
+            tenant_id_c: parseInt(brandData.tenant_id_c),
+            is_default_c: brandData.is_default_c || false,
+            created_at_c: new Date().toISOString()
+          }
+        ]
+      };
+
+      const response = await this.apperClient.createRecord(this.tableName, params);
+      
+      if (!response.success) {
+        console.error(response.message);
+        throw new Error(response.message);
+      }
+
+      if (response.results) {
+        const successfulRecords = response.results.filter(result => result.success);
+        const failedRecords = response.results.filter(result => !result.success);
+        
+        if (failedRecords.length > 0) {
+          console.error(`Failed to create brand ${failedRecords.length} records:${JSON.stringify(failedRecords)}`);
+          throw new Error("Failed to create brand");
+        }
+        
+        return successfulRecords[0]?.data;
+      }
+    } catch (error) {
+      if (error?.response?.data?.message) {
+        console.error("Error creating brand:", error?.response?.data?.message);
+      } else {
+        console.error(error);
+      }
+      throw error;
+    }
   }
 
   async update(id, brandData) {
-    await delay(250);
-    const index = this.brands.findIndex(b => b.Id === parseInt(id));
-    if (index === -1) {
-      throw new Error(`Brand with ID ${id} not found`);
+    try {
+      const params = {
+        records: [
+          {
+            Id: parseInt(id),
+            Name: brandData.Name,
+            Tags: brandData.Tags,
+            color_c: brandData.color_c,
+            emoji_c: brandData.emoji_c,
+            tenant_id_c: parseInt(brandData.tenant_id_c),
+            is_default_c: brandData.is_default_c
+          }
+        ]
+      };
+
+      const response = await this.apperClient.updateRecord(this.tableName, params);
+      
+      if (!response.success) {
+        console.error(response.message);
+        throw new Error(response.message);
+      }
+
+      if (response.results) {
+        const successfulUpdates = response.results.filter(result => result.success);
+        const failedUpdates = response.results.filter(result => !result.success);
+        
+        if (failedUpdates.length > 0) {
+          console.error(`Failed to update brand ${failedUpdates.length} records:${JSON.stringify(failedUpdates)}`);
+          throw new Error("Failed to update brand");
+        }
+        
+        return successfulUpdates[0]?.data;
+      }
+    } catch (error) {
+      if (error?.response?.data?.message) {
+        console.error("Error updating brand:", error?.response?.data?.message);
+      } else {
+        console.error(error);
+      }
+      throw error;
     }
-    
-    this.brands[index] = {
-      ...this.brands[index],
-      ...brandData,
-      Id: parseInt(id)
-    };
-    return { ...this.brands[index] };
   }
 
   async delete(id) {
-    await delay(200);
-    const index = this.brands.findIndex(b => b.Id === parseInt(id));
-    if (index === -1) {
-      throw new Error(`Brand with ID ${id} not found`);
+    try {
+      const params = {
+        RecordIds: [parseInt(id)]
+      };
+
+      const response = await this.apperClient.deleteRecord(this.tableName, params);
+      
+      if (!response.success) {
+        console.error(response.message);
+        throw new Error(response.message);
+      }
+
+      return { success: true };
+    } catch (error) {
+      if (error?.response?.data?.message) {
+        console.error("Error deleting brand:", error?.response?.data?.message);
+      } else {
+        console.error(error);
+      }
+      throw error;
     }
-    
-    const brand = this.brands[index];
-    if (brand.isDefault) {
-      throw new Error("Cannot delete the default brand");
-    }
-    
-    this.brands.splice(index, 1);
-    return { success: true };
   }
 
-async getDefault(tenantId = null) {
-    await delay(100);
-    const brands = tenantId ? this.filterByTenant(this.brands, tenantId) : this.brands;
-    return brands.find(b => b.isDefault) || brands[0];
+  async getDefault(tenantId = null) {
+    try {
+      const params = {
+        fields: [
+          { field: { Name: "Name" } },
+          { field: { Name: "Tags" } },
+          { field: { Name: "color_c" } },
+          { field: { Name: "emoji_c" } },
+          { field: { Name: "is_default_c" } },
+          { field: { Name: "created_at_c" } },
+          { field: { Name: "tenant_id_c" } }
+        ],
+        where: [
+          {
+            FieldName: "is_default_c",
+            Operator: "EqualTo",
+            Values: [true]
+          }
+        ]
+      };
+
+      if (tenantId) {
+        params.where.push({
+          FieldName: "tenant_id_c",
+          Operator: "EqualTo",
+          Values: [parseInt(tenantId)]
+        });
+      }
+
+      const response = await this.apperClient.fetchRecords(this.tableName, params);
+      
+      if (!response.success) {
+        console.error(response.message);
+        // Fall back to getting first brand for tenant
+        return (await this.getAll(tenantId))[0];
+      }
+
+      return response.data?.[0] || (await this.getAll(tenantId))[0];
+    } catch (error) {
+      if (error?.response?.data?.message) {
+        console.error("Error fetching default brand:", error?.response?.data?.message);
+      } else {
+        console.error(error);
+      }
+      // Fall back to getting first brand for tenant
+      return (await this.getAll(tenantId))[0];
+    }
   }
 
   async getByTenant(tenantId) {
-    await delay(150);
-    return this.filterByTenant(this.brands, tenantId);
+    return this.getAll(tenantId);
   }
 }
 

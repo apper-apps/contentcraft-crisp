@@ -1,20 +1,19 @@
-import React, { useState, useEffect } from "react";
-import ApperIcon from "@/components/ApperIcon";
-import Button from "@/components/atoms/Button";
-import Input from "@/components/atoms/Input";
+import React, { useEffect, useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/atoms/Card";
-import Badge from "@/components/atoms/Badge";
-import Loading from "@/components/ui/Loading";
-import Error from "@/components/ui/Error";
-import Empty from "@/components/ui/Empty";
 import { useNavigate } from "react-router-dom";
 import { contentService } from "@/services/api/contentService";
-import { useTenant } from "@/contexts/TenantContext";
+import { useSelector } from "react-redux";
 import { format } from "date-fns";
 import { toast } from "react-toastify";
+import ApperIcon from "@/components/ApperIcon";
+import Error from "@/components/ui/Error";
+import Empty from "@/components/ui/Empty";
+import Loading from "@/components/ui/Loading";
+import Button from "@/components/atoms/Button";
+import Badge from "@/components/atoms/Badge";
+import Input from "@/components/atoms/Input";
 
 const ContentLibrary = ({ selectedBrand }) => {
-  const { currentTenant } = useTenant();
   const [activeTab, setActiveTab] = useState("history");
   const [contents, setContents] = useState([]);
   const [searchQuery, setSearchQuery] = useState("");
@@ -23,18 +22,16 @@ const ContentLibrary = ({ selectedBrand }) => {
   const [error, setError] = useState(null);
   const navigate = useNavigate();
 
-  useEffect(() => {
-    loadContents();
-  }, [selectedBrand, currentTenant]);
+  // Get current tenant from localStorage or context
+  const currentTenant = { Id: 1 }; // Simplified for this implementation
 
-const loadContents = async () => {
+  const loadContents = async () => {
     try {
       setLoading(true);
-const data = await contentService.getAll(currentTenant?.Id);
-      setContents(data);
+      const data = await contentService.getAll(currentTenant?.Id);
       
       const filteredData = selectedBrand && selectedBrand.Id
-        ? data.filter(item => item.brandId === selectedBrand.Id)
+        ? data.filter(item => item.brand_id_c === selectedBrand.Id)
         : data;
       setContents(filteredData);
     } catch (err) {
@@ -43,6 +40,12 @@ const data = await contentService.getAll(currentTenant?.Id);
       setLoading(false);
     }
   };
+
+  useEffect(() => {
+    loadContents();
+  }, [selectedBrand]);
+
+const loadContents = async () => {
 
   const handleDeleteContent = async (contentId) => {
     try {
@@ -68,17 +71,17 @@ const data = await contentService.getAll(currentTenant?.Id);
 
   const categories = [
     { id: "all", name: "All Content", count: contents.length },
-    { id: "youtube", name: "YouTube", count: contents.filter(c => c.preset?.includes("YouTube")).length },
-    { id: "blog", name: "Blog Posts", count: contents.filter(c => c.preset?.includes("Blog")).length },
-    { id: "social", name: "Social Media", count: contents.filter(c => c.preset?.includes("Social")).length },
-    { id: "marketing", name: "Marketing", count: contents.filter(c => c.preset?.includes("Marketing")).length }
+{ id: "youtube", name: "YouTube", count: contents.filter(c => c.preset_c?.includes("YouTube")).length },
+    { id: "blog", name: "Blog Posts", count: contents.filter(c => c.preset_c?.includes("Blog")).length },
+    { id: "social", name: "Social Media", count: contents.filter(c => c.preset_c?.includes("Social")).length },
+    { id: "marketing", name: "Marketing", count: contents.filter(c => c.preset_c?.includes("Marketing")).length }
   ];
 
-  const filteredContents = contents.filter(content => {
-    const matchesSearch = content.input?.toLowerCase().includes(searchQuery.toLowerCase()) ||
-                         content.preset?.toLowerCase().includes(searchQuery.toLowerCase());
+const filteredContents = contents.filter(content => {
+    const matchesSearch = content.input_c?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+                         content.preset_c?.toLowerCase().includes(searchQuery.toLowerCase());
     const matchesCategory = selectedCategory === "all" || 
-                           content.preset?.toLowerCase().includes(selectedCategory);
+                           content.preset_c?.toLowerCase().includes(selectedCategory);
     return matchesSearch && matchesCategory;
   });
 
@@ -86,16 +89,16 @@ const data = await contentService.getAll(currentTenant?.Id);
   const libraryContents = filteredContents.filter(c => c.isSaved); // Saved/starred content
 
   const renderContentCard = (content) => (
-    <Card key={content.Id} className="card-hover">
+<Card key={content.Id} className="card-hover">
       <CardHeader className="pb-3">
         <div className="flex items-start justify-between">
           <div className="flex items-center space-x-2">
             <ApperIcon name="FileText" className="w-4 h-4 text-gray-500" />
-            <CardTitle className="text-base">{content.preset}</CardTitle>
+            <CardTitle className="text-base">{content.preset_c}</CardTitle>
           </div>
           <div className="flex items-center space-x-2">
             <Badge variant="success" className="text-xs">
-              {content.outputCount || 4} outputs
+              {content.output_count_c || 4} outputs
             </Badge>
             <Button
               variant="ghost"
@@ -111,11 +114,11 @@ const data = await contentService.getAll(currentTenant?.Id);
       
       <CardContent className="pt-0">
         <p className="text-sm text-gray-600 line-clamp-2 mb-4">
-          {content.input}
+          {content.input_c}
         </p>
         
         <div className="space-y-2 mb-4">
-          {content.outputs && Object.entries(content.outputs).slice(0, 2).map(([type, output]) => (
+          {content.outputs_c && Object.entries(JSON.parse(content.outputs_c || '{}')).slice(0, 2).map(([type, output]) => (
             <div key={type} className="p-2 bg-gray-50 rounded border text-xs">
               <div className="flex items-center justify-between mb-1">
                 <span className="font-medium text-gray-700 capitalize">
@@ -136,11 +139,11 @@ const data = await contentService.getAll(currentTenant?.Id);
         </div>
         
         <div className="flex items-center justify-between text-xs text-gray-500">
-          <span>{format(new Date(content.createdAt), "MMM d, yyyy 'at' h:mm a")}</span>
+          <span>{format(new Date(content.created_at_c), "MMM d, yyyy 'at' h:mm a")}</span>
           <div className="flex items-center space-x-3">
             <div className="flex items-center space-x-1">
               <ApperIcon name="BarChart3" className="w-3 h-3" />
-              <span>{content.wordCount || 1250} words</span>
+              <span>{content.word_count_c || 1250} words</span>
             </div>
             <div className="flex items-center space-x-1">
               <ApperIcon name="Clock" className="w-3 h-3" />

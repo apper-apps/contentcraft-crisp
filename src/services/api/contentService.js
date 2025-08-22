@@ -1,76 +1,214 @@
-import contentData from "@/services/mockData/content.json";
-
 const delay = (ms) => new Promise(resolve => setTimeout(resolve, ms));
 
 class ContentService {
   constructor() {
-    this.contents = [...contentData];
-  }
-
-  // Filter content by tenant
-  filterByTenant(contents, tenantId) {
-    if (!tenantId) return contents;
-    return contents.filter(content => content.tenantId === tenantId);
+    const { ApperClient } = window.ApperSDK;
+    this.apperClient = new ApperClient({
+      apperProjectId: import.meta.env.VITE_APPER_PROJECT_ID,
+      apperPublicKey: import.meta.env.VITE_APPER_PUBLIC_KEY
+    });
+    this.tableName = 'content_c';
   }
 
   async getAll(tenantId = null) {
-    await delay(300);
-    const allContents = [...this.contents];
-    return tenantId ? this.filterByTenant(allContents, tenantId) : allContents;
+    try {
+      const params = {
+        fields: [
+          { field: { Name: "Name" } },
+          { field: { Name: "Tags" } },
+          { field: { Name: "input_c" } },
+          { field: { Name: "preset_c" } },
+          { field: { Name: "provider_c" } },
+          { field: { Name: "output_count_c" } },
+          { field: { Name: "word_count_c" } },
+          { field: { Name: "created_at_c" } },
+          { field: { Name: "outputs_c" } },
+          { field: { Name: "brand_id_c" } },
+          { field: { Name: "tenant_id_c" } }
+        ]
+      };
+
+      if (tenantId) {
+        params.where = [
+          {
+            FieldName: "tenant_id_c",
+            Operator: "EqualTo",
+            Values: [parseInt(tenantId)]
+          }
+        ];
+      }
+
+      const response = await this.apperClient.fetchRecords(this.tableName, params);
+      
+      if (!response.success) {
+        console.error(response.message);
+        throw new Error(response.message);
+      }
+
+      return response.data || [];
+    } catch (error) {
+      if (error?.response?.data?.message) {
+        console.error("Error fetching content:", error?.response?.data?.message);
+      } else {
+        console.error(error);
+      }
+      throw error;
+    }
   }
 
-
   async getById(id) {
-    await delay(150);
-    const content = this.contents.find(c => c.Id === parseInt(id));
-    if (!content) {
-      throw new Error(`Content with ID ${id} not found`);
+    try {
+      const params = {
+        fields: [
+          { field: { Name: "Name" } },
+          { field: { Name: "Tags" } },
+          { field: { Name: "input_c" } },
+          { field: { Name: "preset_c" } },
+          { field: { Name: "provider_c" } },
+          { field: { Name: "output_count_c" } },
+          { field: { Name: "word_count_c" } },
+          { field: { Name: "created_at_c" } },
+          { field: { Name: "outputs_c" } },
+          { field: { Name: "brand_id_c" } },
+          { field: { Name: "tenant_id_c" } }
+        ]
+      };
+
+      const response = await this.apperClient.getRecordById(this.tableName, parseInt(id), params);
+      
+      if (!response || !response.data) {
+        throw new Error(`Content with ID ${id} not found`);
+      }
+      
+      return response.data;
+    } catch (error) {
+      if (error?.response?.data?.message) {
+        console.error(`Error fetching content with ID ${id}:`, error?.response?.data?.message);
+      } else {
+        console.error(error);
+      }
+      throw error;
     }
-    return { ...content };
-}
+  }
 
   async create(contentData) {
-    await delay(400);
-    const newContent = {
-      Id: this.contents.length > 0 ? Math.max(...this.contents.map(c => c.Id)) + 1 : 1,
-      input: contentData.input,
-      preset: contentData.preset,
-      provider: contentData.provider || "OpenAI GPT-4",
-      brandId: contentData.brandId,
-      tenantId: contentData.tenantId,
-      outputCount: contentData.types ? contentData.types.length : 4,
-      wordCount: Math.floor(Math.random() * 2000) + 800,
-      createdAt: new Date().toISOString(),
-      outputs: {}
-    };
-    this.contents.push(newContent);
-    return { ...newContent };
+    try {
+      const params = {
+        records: [
+          {
+            Name: contentData.Name || contentData.preset_c || "Generated Content",
+            Tags: contentData.Tags || "",
+            input_c: contentData.input_c,
+            preset_c: contentData.preset_c,
+            provider_c: contentData.provider_c || "OpenAI GPT-4",
+            brand_id_c: parseInt(contentData.brand_id_c),
+            tenant_id_c: parseInt(contentData.tenant_id_c),
+            output_count_c: contentData.output_count_c || 4,
+            word_count_c: contentData.word_count_c || Math.floor(Math.random() * 2000) + 800,
+            created_at_c: new Date().toISOString(),
+            outputs_c: JSON.stringify(contentData.outputs_c || {})
+          }
+        ]
+      };
+
+      const response = await this.apperClient.createRecord(this.tableName, params);
+      
+      if (!response.success) {
+        console.error(response.message);
+        throw new Error(response.message);
+      }
+
+      if (response.results) {
+        const successfulRecords = response.results.filter(result => result.success);
+        const failedRecords = response.results.filter(result => !result.success);
+        
+        if (failedRecords.length > 0) {
+          console.error(`Failed to create content ${failedRecords.length} records:${JSON.stringify(failedRecords)}`);
+          throw new Error("Failed to create content");
+        }
+        
+        return successfulRecords[0]?.data;
+      }
+    } catch (error) {
+      if (error?.response?.data?.message) {
+        console.error("Error creating content:", error?.response?.data?.message);
+      } else {
+        console.error(error);
+      }
+      throw error;
+    }
   }
 
   async update(id, contentData) {
-    await delay(250);
-    const index = this.contents.findIndex(c => c.Id === parseInt(id));
-    if (index === -1) {
-      throw new Error(`Content with ID ${id} not found`);
+    try {
+      const params = {
+        records: [
+          {
+            Id: parseInt(id),
+            Name: contentData.Name,
+            Tags: contentData.Tags,
+            input_c: contentData.input_c,
+            preset_c: contentData.preset_c,
+            provider_c: contentData.provider_c,
+            brand_id_c: parseInt(contentData.brand_id_c),
+            tenant_id_c: parseInt(contentData.tenant_id_c),
+            output_count_c: contentData.output_count_c,
+            word_count_c: contentData.word_count_c,
+            outputs_c: typeof contentData.outputs_c === 'string' ? contentData.outputs_c : JSON.stringify(contentData.outputs_c)
+          }
+        ]
+      };
+
+      const response = await this.apperClient.updateRecord(this.tableName, params);
+      
+      if (!response.success) {
+        console.error(response.message);
+        throw new Error(response.message);
+      }
+
+      if (response.results) {
+        const successfulUpdates = response.results.filter(result => result.success);
+        const failedUpdates = response.results.filter(result => !result.success);
+        
+        if (failedUpdates.length > 0) {
+          console.error(`Failed to update content ${failedUpdates.length} records:${JSON.stringify(failedUpdates)}`);
+          throw new Error("Failed to update content");
+        }
+        
+        return successfulUpdates[0]?.data;
+      }
+    } catch (error) {
+      if (error?.response?.data?.message) {
+        console.error("Error updating content:", error?.response?.data?.message);
+      } else {
+        console.error(error);
+      }
+      throw error;
     }
-    
-    this.contents[index] = {
-      ...this.contents[index],
-      ...contentData,
-      Id: parseInt(id)
-    };
-    return { ...this.contents[index] };
   }
 
   async delete(id) {
-    await delay(200);
-    const index = this.contents.findIndex(c => c.Id === parseInt(id));
-    if (index === -1) {
-      throw new Error(`Content with ID ${id} not found`);
+    try {
+      const params = {
+        RecordIds: [parseInt(id)]
+      };
+
+      const response = await this.apperClient.deleteRecord(this.tableName, params);
+      
+      if (!response.success) {
+        console.error(response.message);
+        throw new Error(response.message);
+      }
+
+      return { success: true };
+    } catch (error) {
+      if (error?.response?.data?.message) {
+        console.error("Error deleting content:", error?.response?.data?.message);
+      } else {
+        console.error(error);
+      }
+      throw error;
     }
-    
-    this.contents.splice(index, 1);
-    return { success: true };
   }
 
   async generateContent(contentData, type) {
@@ -84,13 +222,14 @@ class ContentService {
       timestamps: this.generateTimestamps(contentData),
       voice_analysis: this.generateVoiceAnalysis(contentData),
       social_posts: this.generateSocialPosts(contentData),
-email_newsletter: this.generateEmailNewsletter(contentData)
+      email_newsletter: this.generateEmailNewsletter(contentData)
     };
     
-    return sampleOutputs[type] || `Generated ${type} content based on: ${contentData?.input?.slice(0, 100) || 'provided content'}...`;
+    return sampleOutputs[type] || `Generated ${type} content based on: ${contentData?.input_c?.slice(0, 100) || 'provided content'}...`;
   }
+  
   generateYouTubeDescription(data) {
-    return `🚀 ${data.preset} - Transform Your Content Strategy!
+    return `🚀 ${data.preset_c} - Transform Your Content Strategy!
 
 Discover powerful techniques to elevate your content game with this comprehensive guide. Perfect for creators, marketers, and businesses looking to maximize their impact.
 
@@ -112,7 +251,7 @@ Discover powerful techniques to elevate your content game with this comprehensiv
 • Improved content ROI
 • Stronger brand presence
 
-💡 Key Takeaway: ${data?.input?.slice(0, 150) || 'your content strategy'}...
+💡 Key Takeaway: ${data?.input_c?.slice(0, 150) || 'your content strategy'}...
 
 🔔 Subscribe for more content marketing insights!
 
@@ -120,11 +259,11 @@ Discover powerful techniques to elevate your content game with this comprehensiv
   }
 
   generateBlogPost(data) {
-    return `# ${data.preset}: A Comprehensive Guide
+    return `# ${data.preset_c}: A Comprehensive Guide
 
 ## Introduction
 This comprehensive forum post explores the key insights from your content:
-${data?.input || 'your provided content'}
+${data?.input_c || 'your provided content'}
 
 This comprehensive approach to content strategy has proven effective across various industries and can be adapted to meet your specific business needs.
 
@@ -165,10 +304,10 @@ Remember: consistency and quality are more important than perfection. Start wher
   }
 
   generateForumPost(data) {
-    return `**${data.preset} - Sharing My Experience**
+    return `**${data.preset_c} - Sharing My Experience**
 Hey everyone! 👋
 
-I wanted to share some insights about ${data?.input?.slice(0, 100) || 'the latest content marketing trends'}...
+I wanted to share some insights about ${data?.input_c?.slice(0, 100) || 'the latest content marketing trends'}...
 **What I've Learned:**
 - Implementation requires patience and consistency
 - Results may take time but are worth the effort
@@ -346,10 +485,12 @@ Best,
 If this was helpful, forward it to a friend who might benefit!
 [Unsubscribe] | [Update Preferences]`;
   }
-async getByTenant(tenantId) {
-    await delay(200);
-    return this.filterByTenant(this.contents, tenantId);
+
+  async getByTenant(tenantId) {
+    return this.getAll(tenantId);
   }
 }
+
+export const contentService = new ContentService();
 
 export const contentService = new ContentService();

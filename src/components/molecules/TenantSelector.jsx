@@ -1,8 +1,9 @@
-import React, { useState, useRef, useEffect } from "react";
+import React, { useEffect, useRef, useState } from "react";
+import { useSelector } from "react-redux";
 import ApperIcon from "@/components/ApperIcon";
 import Button from "@/components/atoms/Button";
-import { useTenant } from "@/contexts/TenantContext";
 import { cn } from "@/utils/cn";
+import { useTenant } from "@/hooks/useTenant";
 
 const TenantSelector = ({ onManageTenants }) => {
   const { currentTenant, tenants, switchTenant } = useTenant();
@@ -26,6 +27,10 @@ const TenantSelector = ({ onManageTenants }) => {
     }
   };
 
+// Mock tenant selector - in real app would need tenant context
+  return null; // Disabled for now since tenant switching is handled in App.jsx
+  
+  /*
   if (!currentTenant || tenants.length <= 1) {
     return null;
   }
@@ -40,9 +45,9 @@ const TenantSelector = ({ onManageTenants }) => {
         <div className="flex items-center space-x-2">
           <div
             className="w-3 h-3 rounded-full"
-            style={{ backgroundColor: currentTenant.primaryColor }}
+            style={{ backgroundColor: currentTenant.primary_color_c }}
           />
-          <span className="font-medium text-gray-900">{currentTenant.name}</span>
+          <span className="font-medium text-gray-900">{currentTenant.Name}</span>
         </div>
         <ApperIcon 
           name={isOpen ? "ChevronUp" : "ChevronDown"} 
@@ -71,20 +76,20 @@ const TenantSelector = ({ onManageTenants }) => {
               >
                 <div
                   className="w-4 h-4 rounded-full border-2 border-white shadow-sm flex-shrink-0"
-                  style={{ backgroundColor: tenant.primaryColor }}
+                  style={{ backgroundColor: tenant.primary_color_c }}
                 />
                 <div className="flex-1 min-w-0">
-                  <div className="font-medium text-gray-900 truncate">{tenant.name}</div>
-                  <div className="text-xs text-gray-500 truncate">{tenant.domain}</div>
+                  <div className="font-medium text-gray-900 truncate">{tenant.Name}</div>
+                  <div className="text-xs text-gray-500 truncate">{tenant.domain_c}</div>
                 </div>
                 <div className="flex items-center space-x-2">
                   <div className={cn(
                     "text-xs px-2 py-1 rounded-full",
-                    tenant.subscription.status === 'active' 
+                    JSON.parse(tenant.subscription_c || '{}').status === 'active' 
                       ? "bg-green-100 text-green-700"
                       : "bg-yellow-100 text-yellow-700"
                   )}>
-                    {tenant.subscription.plan}
+                    {JSON.parse(tenant.subscription_c || '{}').plan}
                   </div>
                   {currentTenant?.Id === tenant.Id && (
                     <ApperIcon name="Check" className="w-4 h-4 text-blue-600" />
@@ -112,6 +117,7 @@ const TenantSelector = ({ onManageTenants }) => {
       )}
     </div>
   );
+  */
 };
 
 export default TenantSelector;

@@ -39,13 +39,13 @@ const BrandManager = ({ brands, onSave, onClose, currentTenant }) => {
     }
 
     const brand = {
-      Id: Math.max(...brandList.map(b => b.Id)) + 1,
-      name: newBrand.name.trim(),
-      color: newBrand.color,
-      emoji: newBrand.emoji,
-      isDefault: false,
-      createdAt: new Date().toISOString()
-    };
+Name: newBrand.Name.trim(),
+color_c: newBrand.color_c,
+emoji_c: newBrand.emoji_c,
+tenant_id_c: currentTenant?.Id,
+is_default_c: false,
+created_at_c: new Date().toISOString()
+};
 
     setBrandList([...brandList, brand]);
     setNewBrand({ name: "", color: "#3B82F6", emoji: "🚀" });
@@ -54,15 +54,15 @@ const BrandManager = ({ brands, onSave, onClose, currentTenant }) => {
   };
 
   const handleDeleteBrand = (brandId) => {
-    const brand = brandList.find(b => b.Id === brandId);
+const brand = brandList.find(b => b.Id === brandId);
     
-    if (brand?.isDefault) {
+    if (brand?.is_default_c) {
       toast.error("Cannot delete the default brand");
       return;
     }
 
     setBrandList(brandList.filter(b => b.Id !== brandId));
-    toast.success(`Brand "${brand.name}" deleted successfully`);
+    toast.success(`Brand "${brand.Name}" deleted successfully`);
   };
 
   const handleColorChange = (color) => {
@@ -106,13 +106,13 @@ const BrandManager = ({ brands, onSave, onClose, currentTenant }) => {
               
               <div className="space-y-3 max-h-96 overflow-y-auto">
                 {brandList.map((brand) => (
-                  <Card key={brand.Id} className="p-4">
+<Card key={brand.Id} className="p-4">
                     <div className="flex items-center justify-between">
                       <div className="flex items-center space-x-3">
-                        <span className="text-2xl">{brand.emoji}</span>
+                        <span className="text-2xl">{brand.emoji_c}</span>
                         <div>
-                          <h4 className="font-medium text-gray-900">{brand.name}</h4>
-                          {brand.isDefault && (
+                          <h4 className="font-medium text-gray-900">{brand.Name}</h4>
+                          {brand.is_default_c && (
                             <span className="text-xs text-gray-500">Default Brand</span>
                           )}
                         </div>
@@ -122,7 +122,7 @@ const BrandManager = ({ brands, onSave, onClose, currentTenant }) => {
                           className="w-6 h-6 rounded-full border-2 border-white shadow-md"
                           style={{ backgroundColor: brand.color }}
                         />
-                        {!brand.isDefault && (
+{!brand.is_default_c && (
                           <Button
                             variant="ghost"
                             size="sm"

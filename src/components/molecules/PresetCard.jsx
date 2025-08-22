@@ -79,7 +79,7 @@ const PresetCard = ({
               isSelected ? "bg-primary-100" : "bg-gray-100"
             )}>
               <ApperIcon 
-                name={getCategoryIcon(preset.category)} 
+name={getCategoryIcon(preset.category_c)} 
                 className={cn(
                   "w-5 h-5",
                   isSelected ? "text-primary-600" : "text-gray-600"
@@ -88,10 +88,10 @@ const PresetCard = ({
             </div>
           </div>
           <div className="flex items-center space-x-2">
-            <Badge variant={getCategoryColor(preset.category)}>
-              {preset.category}
+<Badge variant={getCategoryColor(preset.category_c)}>
+{preset.category_c}
             </Badge>
-            {preset.isCustom && (
+            {preset.is_custom_c && (
               <Button
                 variant="ghost"
                 size="sm"
@@ -110,7 +110,7 @@ const PresetCard = ({
           "text-base leading-tight",
           isSelected ? "text-primary-900" : "text-gray-900"
         )}>
-          {preset.name}
+{preset.Name}
         </CardTitle>
       </CardHeader>
 
@@ -119,10 +119,10 @@ const PresetCard = ({
           "text-sm leading-relaxed line-clamp-3",
           isSelected ? "text-primary-700" : "text-gray-600"
         )}>
-          {preset.description}
+{preset.description_c}
         </p>
         
-        {preset.suggested && (
+{preset.suggested_c && (
           <div className="mt-3 flex items-center space-x-1">
             <ApperIcon name="Star" className="w-4 h-4 text-yellow-500 fill-current" />
             <span className="text-xs font-medium text-yellow-600">Suggested</span>

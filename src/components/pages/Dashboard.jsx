@@ -12,24 +12,25 @@ import { useTenant } from "@/contexts/TenantContext";
 import { format } from "date-fns";
 
 const Dashboard = ({ selectedBrand }) => {
-  const { currentTenant } = useTenant();
+// Simplified tenant for this implementation
+  const currentTenant = { Id: 1 };
   const [contents, setContents] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const navigate = useNavigate();
 
-  useEffect(() => {
+useEffect(() => {
     loadDashboardData();
   }, [selectedBrand, currentTenant]);
 
-const loadDashboardData = async () => {
+  const loadDashboardData = async () => {
     try {
       setLoading(true);
-const data = await contentService.getAll(currentTenant?.Id);
+      const data = await contentService.getAll(currentTenant?.Id);
       setContents(data);
       
       const filteredData = selectedBrand && selectedBrand.Id
-        ? data.filter(item => item.brandId === selectedBrand.Id)
+        ? data.filter(item => item.brand_id_c === selectedBrand.Id)
         : data;
       setContents(filteredData);
     } catch (err) {
@@ -43,14 +44,14 @@ const data = await contentService.getAll(currentTenant?.Id);
   if (error) return <Error message={error} onRetry={loadDashboardData} />;
 
   const stats = {
-    totalContent: contents.length,
+totalContent: contents.length,
     thisWeek: contents.filter(c => {
-      const createdDate = new Date(c.createdAt);
+      const createdDate = new Date(c.created_at_c);
       const weekAgo = new Date();
       weekAgo.setDate(weekAgo.getDate() - 7);
       return createdDate >= weekAgo;
     }).length,
-    totalWords: contents.reduce((acc, c) => acc + (c.wordCount || 0), 0),
+    totalWords: contents.reduce((acc, c) => acc + (c.word_count_c || 0), 0),
     avgRating: contents.length > 0 ? 4.8 : 0
   };
 
@@ -117,13 +118,13 @@ const data = await contentService.getAll(currentTenant?.Id);
           <div>
             <h1 className="text-3xl font-bold text-gray-900">Dashboard</h1>
             <p className="text-gray-600 mt-1">
-              Welcome back! Here's your content overview for {selectedBrand?.name || "your account"}.
+Welcome back! Here's your content overview for {selectedBrand?.Name || "your account"}.
             </p>
           </div>
           <div className="flex items-center space-x-2">
-            <span className="text-2xl">{selectedBrand?.emoji || "🚀"}</span>
+<span className="text-2xl">{selectedBrand?.emoji_c || "🚀"}</span>
             <div className="text-right">
-              <p className="font-medium text-gray-900">{selectedBrand?.name || "Default Brand"}</p>
+              <p className="font-medium text-gray-900">{selectedBrand?.Name || "Default Brand"}</p>
               <p className="text-sm text-gray-500">Active Brand</p>
             </div>
           </div>
@@ -185,29 +186,29 @@ const data = await contentService.getAll(currentTenant?.Id);
             {recentContent.length > 0 ? (
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                 {recentContent.map((content) => (
-                  <Card key={content.Id} className="card-hover">
+<Card key={content.Id} className="card-hover">
                     <CardContent className="p-4">
                       <div className="flex items-start justify-between mb-3">
                         <div className="flex items-center space-x-2">
                           <ApperIcon name="FileText" className="w-4 h-4 text-gray-500" />
                           <span className="text-sm font-medium text-gray-900">
-                            {content.preset}
+                            {content.preset_c}
                           </span>
                         </div>
                         <Badge variant="success" className="text-xs">
-                          {content.outputCount || 4} outputs
+                          {content.output_count_c || 4} outputs
                         </Badge>
                       </div>
                       
                       <p className="text-sm text-gray-600 line-clamp-2 mb-3">
-                        {content.input}
+                        {content.input_c}
                       </p>
                       
                       <div className="flex items-center justify-between text-xs text-gray-500">
-                        <span>{format(new Date(content.createdAt), "MMM d, yyyy")}</span>
+                        <span>{format(new Date(content.created_at_c), "MMM d, yyyy")}</span>
                         <div className="flex items-center space-x-1">
                           <ApperIcon name="BarChart3" className="w-3 h-3" />
-                          <span>{content.wordCount || 1250} words</span>
+                          <span>{content.word_count_c || 1250} words</span>
                         </div>
                       </div>
                     </CardContent>

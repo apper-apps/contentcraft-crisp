@@ -31,8 +31,8 @@ const BrandSelector = ({ brands, selectedBrand, onBrandChange, onManageBrands, c
         className="flex items-center space-x-2 min-w-[140px]"
         onClick={() => setIsOpen(!isOpen)}
       >
-        <span className="text-lg">{selectedBrand?.emoji}</span>
-        <span className="font-medium">{selectedBrand?.name}</span>
+<span className="text-lg">{selectedBrand?.emoji_c}</span>
+        <span className="font-medium">{selectedBrand?.Name}</span>
         <ApperIcon 
           name={isOpen ? "ChevronUp" : "ChevronDown"} 
           className="w-4 h-4 text-gray-500" 
@@ -47,7 +47,7 @@ const BrandSelector = ({ brands, selectedBrand, onBrandChange, onManageBrands, c
           
           <div className="max-h-64 overflow-y-auto">
             {brands.map((brand) => (
-              <button
+<button
                 key={brand.Id}
                 className={cn(
                   "w-full px-4 py-3 text-left flex items-center space-x-3 hover:bg-gray-50 transition-colors duration-150",
@@ -58,13 +58,13 @@ const BrandSelector = ({ brands, selectedBrand, onBrandChange, onManageBrands, c
                   setIsOpen(false);
                 }}
               >
-                <span className="text-lg">{brand.emoji}</span>
+                <span className="text-lg">{brand.emoji_c}</span>
                 <div className="flex-1">
-                  <div className="font-medium text-gray-900">{brand.name}</div>
+                  <div className="font-medium text-gray-900">{brand.Name}</div>
                 </div>
                 <div 
                   className="w-4 h-4 rounded-full border-2 border-white shadow-sm"
-                  style={{ backgroundColor: brand.color }}
+                  style={{ backgroundColor: brand.color_c }}
                 ></div>
                 {selectedBrand?.Id === brand.Id && (
                   <ApperIcon name="Check" className="w-4 h-4 text-primary-600" />
