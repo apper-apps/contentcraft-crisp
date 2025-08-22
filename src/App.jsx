@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Routes, Route, useNavigate } from "react-router-dom";
+import { Routes, Route, useNavigate, useLocation, Navigate } from "react-router-dom";
 import TopNavigation from "@/components/organisms/TopNavigation";
 import BrandManager from "@/components/organisms/BrandManager";
 import HomePage from "@/components/pages/HomePage";
@@ -7,14 +7,17 @@ import Dashboard from "@/components/pages/Dashboard";
 import ContentLibrary from "@/components/pages/ContentLibrary";
 import Analytics from "@/components/pages/Analytics";
 import Profile from "@/components/pages/Profile";
+import Login from "@/components/pages/Login";
 import Loading from "@/components/ui/Loading";
 import Error from "@/components/ui/Error";
 import { brandService } from "@/services/api/brandService";
 import { useTenant } from "@/contexts/TenantContext";
+import { useAuth } from "@/contexts/AuthContext";
 import { toast } from "react-toastify";
 
 function App() {
   const { currentTenant, loading: tenantLoading } = useTenant();
+  const { user, loading: authLoading, isAuthenticated } = useAuth();
   const [brands, setBrands] = useState([]);
   const [selectedBrand, setSelectedBrand] = useState(null);
   const [showBrandManager, setShowBrandManager] = useState(false);
@@ -22,11 +25,11 @@ function App() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  useEffect(() => {
-    if (currentTenant && !tenantLoading) {
+useEffect(() => {
+    if (currentTenant && !tenantLoading && isAuthenticated && !authLoading) {
       initializeApp();
     }
-  }, [currentTenant, tenantLoading]);
+  }, [currentTenant, tenantLoading, isAuthenticated, authLoading]);
 
 const initializeApp = async () => {
     try {
@@ -75,12 +78,22 @@ const initializeApp = async () => {
     }
   };
 
-if (tenantLoading || loading) {
+// Show loading while authentication or tenant is loading
+  if (authLoading || tenantLoading || (isAuthenticated && loading)) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 flex items-center justify-center">
-        <Loading message={tenantLoading ? "Loading tenant information..." : "Loading ContentCraft Pro..."} />
+        <Loading message={
+          authLoading ? "Authenticating..." : 
+          tenantLoading ? "Loading tenant information..." : 
+          "Loading ContentCraft Pro..."
+        } />
       </div>
     );
+  }
+
+  // If not authenticated, show login page for protected routes
+  if (!isAuthenticated) {
+    return <Login />;
   }
 
   if (!currentTenant) {
@@ -115,9 +128,10 @@ return (
         onBrandChange={handleBrandChange}
         onManageBrands={() => setShowBrandManager(true)}
         onManageTenants={() => setShowTenantManager(true)}
+        currentUser={user}
       />
       
-      <main>
+<main>
         <Routes>
           <Route 
             path="/" 
@@ -138,6 +152,10 @@ return (
           <Route 
             path="/profile" 
             element={<Profile />} 
+          />
+          <Route 
+            path="/login" 
+            element={<Login />} 
           />
         </Routes>
       </main>

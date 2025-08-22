@@ -4,6 +4,7 @@ import ApperIcon from "@/components/ApperIcon";
 import BrandSelector from "@/components/molecules/BrandSelector";
 import TenantSelector from "@/components/molecules/TenantSelector";
 import Button from "@/components/atoms/Button";
+import { useAuth } from "@/contexts/AuthContext";
 import { cn } from "@/utils/cn";
 
 const TopNavigation = ({ 
@@ -12,12 +13,24 @@ const TopNavigation = ({
   onBrandChange, 
   onManageBrands,
   onManageTenants,
-  currentUser = { name: "Content Creator", avatar: null }
+  currentUser
 }) => {
+  const { logout } = useAuth();
   const [isUserMenuOpen, setIsUserMenuOpen] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const userMenuRef = useRef(null);
-  const navigate = useNavigate();
+const navigate = useNavigate();
+
+  const handleLogout = async () => {
+    if (window.confirm('Are you sure you want to log out?')) {
+      try {
+        await logout();
+        navigate('/login', { replace: true });
+      } catch (error) {
+        console.error('Logout failed:', error);
+      }
+    }
+  };
 
   useEffect(() => {
     const handleClickOutside = (event) => {
@@ -142,15 +155,15 @@ const TopNavigation = ({
                     <span>Settings</span>
                   </button>
                   
-                  <button
+<button
                     className="w-full px-4 py-2 text-left text-sm text-gray-700 hover:bg-gray-50 flex items-center space-x-2"
                     onClick={() => {
-                      navigate("/");
                       setIsUserMenuOpen(false);
+                      handleLogout();
                     }}
                   >
-                    <ApperIcon name="HelpCircle" className="w-4 h-4" />
-                    <span>Help</span>
+                    <ApperIcon name="LogOut" className="w-4 h-4" />
+                    <span>Sign Out</span>
                   </button>
                 </div>
               )}
