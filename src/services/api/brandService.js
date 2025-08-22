@@ -7,10 +7,18 @@ class BrandService {
     this.brands = [...brandsData];
   }
 
-  async getAll() {
-    await delay(200);
-    return [...this.brands];
+  // Filter brands by tenant
+  filterByTenant(brands, tenantId) {
+    if (!tenantId) return brands;
+    return brands.filter(brand => brand.tenantId === tenantId);
   }
+
+  async getAll(tenantId = null) {
+    await delay(200);
+    const allBrands = [...this.brands];
+    return tenantId ? this.filterByTenant(allBrands, tenantId) : allBrands;
+  }
+
 
   async getById(id) {
     await delay(150);
@@ -21,13 +29,14 @@ class BrandService {
     return { ...brand };
   }
 
-  async create(brandData) {
+async create(brandData) {
     await delay(300);
     const newBrand = {
       Id: Math.max(...this.brands.map(b => b.Id)) + 1,
       name: brandData.name,
       color: brandData.color,
       emoji: brandData.emoji,
+      tenantId: brandData.tenantId,
       isDefault: false,
       createdAt: new Date().toISOString()
     };
@@ -66,9 +75,15 @@ class BrandService {
     return { success: true };
   }
 
-  async getDefault() {
+async getDefault(tenantId = null) {
     await delay(100);
-    return this.brands.find(b => b.isDefault) || this.brands[0];
+    const brands = tenantId ? this.filterByTenant(this.brands, tenantId) : this.brands;
+    return brands.find(b => b.isDefault) || brands[0];
+  }
+
+  async getByTenant(tenantId) {
+    await delay(150);
+    return this.filterByTenant(this.brands, tenantId);
   }
 }
 

@@ -7,10 +7,18 @@ class ContentService {
     this.contents = [...contentData];
   }
 
-  async getAll() {
-    await delay(300);
-    return [...this.contents];
+  // Filter content by tenant
+  filterByTenant(contents, tenantId) {
+    if (!tenantId) return contents;
+    return contents.filter(content => content.tenantId === tenantId);
   }
+
+  async getAll(tenantId = null) {
+    await delay(300);
+    const allContents = [...this.contents];
+    return tenantId ? this.filterByTenant(allContents, tenantId) : allContents;
+  }
+
 
   async getById(id) {
     await delay(150);
@@ -21,7 +29,7 @@ class ContentService {
     return { ...content };
   }
 
-  async create(contentData) {
+async create(contentData) {
     await delay(400);
     const newContent = {
       Id: Math.max(...this.contents.map(c => c.Id)) + 1,
@@ -29,6 +37,7 @@ class ContentService {
       preset: contentData.preset,
       provider: contentData.provider || "OpenAI GPT-4",
       brandId: contentData.brandId,
+      tenantId: contentData.tenantId,
       outputCount: contentData.types ? contentData.types.length : 4,
       wordCount: Math.floor(Math.random() * 2000) + 800,
       createdAt: new Date().toISOString(),
@@ -339,6 +348,10 @@ Best,
 ---
 If this was helpful, forward it to a friend who might benefit!
 [Unsubscribe] | [Update Preferences]`;
+  }
+async getByTenant(tenantId) {
+    await delay(200);
+    return this.filterByTenant(this.contents, tenantId);
   }
 }
 

@@ -2,6 +2,7 @@ import React, { useState, useRef, useEffect } from "react";
 import { NavLink, useNavigate } from "react-router-dom";
 import ApperIcon from "@/components/ApperIcon";
 import BrandSelector from "@/components/molecules/BrandSelector";
+import TenantSelector from "@/components/molecules/TenantSelector";
 import Button from "@/components/atoms/Button";
 import { cn } from "@/utils/cn";
 
@@ -10,6 +11,7 @@ const TopNavigation = ({
   selectedBrand, 
   onBrandChange, 
   onManageBrands,
+  onManageTenants,
   currentUser = { name: "Content Creator", avatar: null }
 }) => {
   const [isUserMenuOpen, setIsUserMenuOpen] = useState(false);
@@ -83,8 +85,11 @@ const TopNavigation = ({
             ))}
           </div>
 
-          {/* Right Side Actions */}
+{/* Right Side Actions */}
           <div className="flex items-center space-x-4">
+            {/* Tenant Selector */}
+            <TenantSelector onManageTenants={onManageTenants} />
+            
             {/* Brand Selector */}
             <BrandSelector
               brands={brands}
@@ -92,7 +97,6 @@ const TopNavigation = ({
               onBrandChange={onBrandChange}
               onManageBrands={onManageBrands}
             />
-
             {/* User Menu */}
             <div className="relative" ref={userMenuRef}>
               <Button

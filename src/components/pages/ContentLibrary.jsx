@@ -9,10 +9,12 @@ import Error from "@/components/ui/Error";
 import Empty from "@/components/ui/Empty";
 import { useNavigate } from "react-router-dom";
 import { contentService } from "@/services/api/contentService";
+import { useTenant } from "@/contexts/TenantContext";
 import { format } from "date-fns";
 import { toast } from "react-toastify";
 
 const ContentLibrary = ({ selectedBrand }) => {
+  const { currentTenant } = useTenant();
   const [activeTab, setActiveTab] = useState("history");
   const [contents, setContents] = useState([]);
   const [searchQuery, setSearchQuery] = useState("");
@@ -23,13 +25,13 @@ const ContentLibrary = ({ selectedBrand }) => {
 
   useEffect(() => {
     loadContents();
-  }, [selectedBrand]);
+  }, [selectedBrand, currentTenant]);
 
-  const loadContents = async () => {
+const loadContents = async () => {
     try {
       setLoading(true);
       setError(null);
-      const data = await contentService.getAll();
+      const data = await contentService.getAll(currentTenant?.Id);
       // Filter by brand if needed
       const filteredData = selectedBrand 
         ? data.filter(item => item.brandId === selectedBrand.Id)

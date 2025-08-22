@@ -5,7 +5,7 @@ import Input from "@/components/atoms/Input";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/atoms/Card";
 import { toast } from "react-toastify";
 
-const BrandManager = ({ brands, onSave, onClose }) => {
+const BrandManager = ({ brands, onSave, onClose, currentTenant }) => {
   const [brandList, setBrandList] = useState([...brands]);
   const [newBrand, setNewBrand] = useState({
     name: "",

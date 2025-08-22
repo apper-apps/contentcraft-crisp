@@ -7,9 +7,10 @@ import Error from "@/components/ui/Error";
 import Empty from "@/components/ui/Empty";
 import Chart from "react-apexcharts";
 import { contentService } from "@/services/api/contentService";
+import { useTenant } from "@/contexts/TenantContext";
 import { format, subDays, startOfWeek, endOfWeek, eachDayOfInterval } from "date-fns";
-
 const Analytics = ({ selectedBrand }) => {
+  const { currentTenant } = useTenant();
   const [contents, setContents] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -17,13 +18,13 @@ const Analytics = ({ selectedBrand }) => {
 
   useEffect(() => {
     loadAnalytics();
-  }, [selectedBrand]);
+  }, [selectedBrand, currentTenant]);
 
-  const loadAnalytics = async () => {
+const loadAnalytics = async () => {
     try {
       setLoading(true);
       setError(null);
-      const data = await contentService.getAll();
+      const data = await contentService.getAll(currentTenant?.Id);
       const filteredData = selectedBrand 
         ? data.filter(item => item.brandId === selectedBrand.Id)
         : data;

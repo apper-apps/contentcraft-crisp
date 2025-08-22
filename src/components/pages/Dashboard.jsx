@@ -8,9 +8,11 @@ import Error from "@/components/ui/Error";
 import Empty from "@/components/ui/Empty";
 import { useNavigate } from "react-router-dom";
 import { contentService } from "@/services/api/contentService";
+import { useTenant } from "@/contexts/TenantContext";
 import { format } from "date-fns";
 
 const Dashboard = ({ selectedBrand }) => {
+  const { currentTenant } = useTenant();
   const [contents, setContents] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -18,13 +20,13 @@ const Dashboard = ({ selectedBrand }) => {
 
   useEffect(() => {
     loadDashboardData();
-  }, [selectedBrand]);
+  }, [selectedBrand, currentTenant]);
 
-  const loadDashboardData = async () => {
+const loadDashboardData = async () => {
     try {
       setLoading(true);
       setError(null);
-      const data = await contentService.getAll();
+      const data = await contentService.getAll(currentTenant?.Id);
       // Filter by brand if needed
       const filteredData = selectedBrand 
         ? data.filter(item => item.brandId === selectedBrand.Id)

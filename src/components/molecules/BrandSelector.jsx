@@ -3,7 +3,7 @@ import ApperIcon from "@/components/ApperIcon";
 import Button from "@/components/atoms/Button";
 import { cn } from "@/utils/cn";
 
-const BrandSelector = ({ brands, selectedBrand, onBrandChange, onManageBrands }) => {
+const BrandSelector = ({ brands, selectedBrand, onBrandChange, onManageBrands, currentTenant }) => {
   const [isOpen, setIsOpen] = useState(false);
   const dropdownRef = useRef(null);
 
